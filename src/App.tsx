@@ -2,8 +2,13 @@ import React from 'react';
 import logo from './logo.svg';
 import { Counter } from './features/counter/Counter';
 import './App.css';
+import io from 'socket.io-client';
 
 function App() {
+
+  const socket = io('http://localhost:3001');
+  socket.emit('joinRoom', { username: 'test username from react ', room: 'test room from react' });
+
   return (
     <div className="App">
       <header className="App-header">
