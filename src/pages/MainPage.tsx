@@ -9,9 +9,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import shipImag from '../assets/ship.jpg';
+import axios from "axios";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,6 +60,18 @@ function MainPage() {
     setNShots(+event.target.value)
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = {
+      mode: gameMode,
+      'n-shots': nShots
+    };
+    axios
+      .post("http://localhost:3001/games", data)
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
+
   return (
     <React.Fragment>
       <Container maxWidth="sm">
@@ -73,7 +85,8 @@ function MainPage() {
               className={classes.media}
               title="Paella dish"
             />
-            <FormControl className={classes.formControl}>
+
+            <form id="my-form-id" onSubmit={handleSubmit}>
               <InputLabel shrink id="game-mode-label">
                 Game difficulty
               </InputLabel>
@@ -104,10 +117,10 @@ function MainPage() {
                   onChange={handleNShotsChange}
                 />
               }
-              <Button className={classes.button} variant="contained" color="primary">
+              <Button className={classes.button} variant="contained" color="primary" type="submit" >
                 Create game
               </Button>
-            </FormControl>
+            </form>
           </CardContent>
         </Card>
       </Container>
