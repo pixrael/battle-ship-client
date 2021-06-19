@@ -10,9 +10,28 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
+import Modal from '@material-ui/core/Modal';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+
+
 import shipImag from '../assets/ship.jpg';
 import axios from "axios";
 
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +61,17 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     width: '100%'
   },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+  modalText: {
+    textAlign: 'center'
+  }
 }));
 
 
@@ -50,6 +80,10 @@ function MainPage() {
   const classes = useStyles();
   const [gameMode, setGameMode] = React.useState('easy');
   const [nShots, setNShots] = React.useState(500);
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+  const [modalError, setModalError] = React.useState({ error: false, type: '' });
+  let battleId = '';
 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,17 +94,61 @@ function MainPage() {
     setNShots(+event.target.value)
   };
 
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    (modalError.error || battleId) && setOpen(false);
+    setModalError({ error: false, type: '' })
+  };
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
+
     const data = {
       mode: gameMode,
       'n-shots': nShots
     };
+
+    setModalError({ error: false, type: '' });
+    battleId = '';
+
+    handleOpen();
+
     axios
-      .post("http://localhost:3001/games", data)
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+      .post("http://localhost:3001/games", data, { timeout: 3000 })
+      .then(res => {
+        battleId = res.data.battleId;
+        handleClose();
+      })
+      .catch(err => {
+        setModalError({ error: true, type: err + '' });
+      });
   };
+
+  const loadingModalHTML = <> <p id="simple-modal-description" className={classes.modalText} >
+    Creating battle ...
+  </p>
+    <LinearProgress /></>
+
+  const errorModalHTML = <> <p id="simple-modal-description" className={classes.modalText} >
+    Could not create the battle... {modalError.type}
+  </p>
+  </>
+
+
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      {
+        !modalError.error && loadingModalHTML
+      }
+      {
+        modalError.error && errorModalHTML
+      }
+    </div>
+  );
 
   return (
     <React.Fragment>
@@ -124,6 +202,14 @@ function MainPage() {
           </CardContent>
         </Card>
       </Container>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal>
     </React.Fragment>
   );
 }
