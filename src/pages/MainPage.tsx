@@ -4,19 +4,12 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import CardMedia from '@material-ui/core/CardMedia';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
 import Modal from '@material-ui/core/Modal';
 import LinearProgress from '@material-ui/core/LinearProgress';
-
-
-
-import shipImag from '../assets/ship.jpg';
 import axios from "axios";
+import CreateBattleForm from '../components/CreateBattleForm'
+import shipImag from '../assets/ship.jpg';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -38,12 +31,6 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 275,
     marginTop: 100
   },
-  button: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    width: '100%',
-    marginTop: '10px'
-  },
   title: {
     textAlign: 'center',
 
@@ -56,10 +43,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     width: '100%'
 
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-    width: '100%'
   },
   paper: {
     position: 'absolute',
@@ -78,21 +61,10 @@ const useStyles = makeStyles((theme) => ({
 function MainPage() {
 
   const classes = useStyles();
-  const [gameMode, setGameMode] = React.useState('easy');
-  const [nShots, setNShots] = React.useState(500);
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const [modalError, setModalError] = React.useState({ error: false, type: '' });
   let battleId = '';
-
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setGameMode(event.target.value);
-  };
-
-  const handleNShotsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNShots(+event.target.value)
-  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -104,9 +76,7 @@ function MainPage() {
   };
 
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
+  const handleSubmit = (gameMode, nShots) => {
     const data = {
       mode: gameMode,
       'n-shots': nShots
@@ -164,41 +134,7 @@ function MainPage() {
               title="Paella dish"
             />
 
-            <form id="my-form-id" onSubmit={handleSubmit}>
-              <InputLabel shrink id="game-mode-label">
-                Game difficulty
-              </InputLabel>
-              <Select
-                labelId="select-game-mode-label"
-                id="select-game-mode"
-                value={gameMode}
-                onChange={handleChange}
-                displayEmpty
-                className={classes.selectEmpty}
-              >
-                <MenuItem value={'easy'}>Easy (infinite shots)</MenuItem>
-                <MenuItem value={'medium'}>Medium (100 shots)</MenuItem>
-                <MenuItem value={'hard'}>Hard (50 shoots)</MenuItem>
-                <MenuItem value={'custom'}>Custom (you select how many shots)</MenuItem>
-              </Select>
-              {
-                gameMode === 'custom' &&
-                <TextField
-                  id="shots-textfield"
-                  label="Shots:"
-                  type="number"
-                  value={nShots}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  InputProps={{ inputProps: { min: 1, max: 10000 } }}
-                  onChange={handleNShotsChange}
-                />
-              }
-              <Button className={classes.button} variant="contained" color="primary" type="submit" >
-                Create game
-              </Button>
-            </form>
+            <CreateBattleForm onSubmit={handleSubmit} />
           </CardContent>
         </Card>
       </Container>
