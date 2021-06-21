@@ -72,7 +72,7 @@ function CreateBattleForm({ onSubmit }) {
         />
       }
       <Button className={classes.button} variant="contained" color="primary" type="submit" >
-        Create game
+        Create battle
       </Button>
     </form>
   );

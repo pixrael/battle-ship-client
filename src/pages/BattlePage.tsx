@@ -10,7 +10,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import axios from "axios";
 import CreateBattleForm from '../components/CreateBattleForm'
 import shipImag from '../assets/ship.jpg';
-import { useHistory } from "react-router-dom";
 
 
 function rand() {
@@ -35,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     textAlign: 'center',
-
   },
   media: {
     height: 0,
@@ -60,8 +58,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function MainPage() {
-  const history = useHistory();
+function BattlePage(props) {
+  console.log('battle id  ', props.battleId.match.params.id);
+
+
+
+
+
   const classes = useStyles();
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
@@ -94,7 +97,6 @@ function MainPage() {
       .then(res => {
         battleId = res.data.battleId;
         handleClose();
-        history.push(`/battle-page/${battleId}`)
       })
       .catch(err => {
         setModalError({ error: true, type: err + '' });
@@ -129,15 +131,15 @@ function MainPage() {
         <Card className={classes.root}>
           <CardContent>
             <Typography className={classes.title} variant="h5" component="h2">
-              Battleship
+              Battle page !!!!!!!!!!!!!!!!!
             </Typography>
-            <CardMedia
+            {/*  <CardMedia
               image={shipImag}
               className={classes.media}
               title="Paella dish"
             />
 
-            <CreateBattleForm onSubmit={handleSubmit} />
+            <CreateBattleForm onSubmit={handleSubmit} /> */}
           </CardContent>
         </Card>
       </Container>
@@ -153,4 +155,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default BattlePage;
