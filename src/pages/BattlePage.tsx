@@ -52,13 +52,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 function BattlePage(props) {
-  console.log('battle id  ', props.battleId.match.params.id);
-
   const classes = useStyles();
   const [board, setBoard] = React.useState([]);
 
   const handleButtonClick = (r, c) => {
-    console.log('clicked ', r, c);
     socket.emit('shot', { row: r, column: c });
   }
 
@@ -67,12 +64,12 @@ function BattlePage(props) {
   useEffect(() => {
     socket.emit('join-battle', { battleId: props.battleId.match.params.id });
     socket.on('joined', (msg) => {
-      console.log('joined ', msg)
+      console.log('joined ', msg.board)
       setBoard(msg.board)
     })
 
     socket.on('current-state', (msg) => {
-      console.log('current-state ', msg)
+      console.log('current-state ', msg.board)
       setBoard(msg.board)
     })
 
@@ -88,7 +85,7 @@ function BattlePage(props) {
       if (board[i][j] === 0) {
         iconHTML = < WavesIcon />
         buttonClass = classes.buttonSea
-      } else if (board[i][j] === -100) {
+      } else/*  if (board[i][j] === -100) */ {
         iconHTML = < BlurOnIcon />
         buttonClass = classes.buttonMiss
       }
