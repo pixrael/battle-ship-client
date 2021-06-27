@@ -109,7 +109,7 @@ function BattlePage(props) {
       } else if (board[i][j] >= -4 && board[i][j] <= -1) {
         iconHTML = < Brightness7Icon />
         buttonClass = classes.buttonHit
-      } else if (board[i][j] === -30) {
+      } else if (board[i][j] >= -40 && board[i][j] <= -10) {
         iconHTML = < GridOffIcon />
         buttonClass = classes.buttonDestroyed
       }
