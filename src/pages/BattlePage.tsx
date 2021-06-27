@@ -11,6 +11,7 @@ import WavesIcon from '@material-ui/icons/Waves';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import BlurOnIcon from '@material-ui/icons/BlurOn';
 import GridOffIcon from '@material-ui/icons/GridOff';
+import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
 
 const socket = io('http://localhost:3001');
@@ -73,25 +74,34 @@ const useStyles = makeStyles((theme) => ({
 
 
 function BattlePage(props) {
+  const history = useHistory();
   const classes = useStyles();
   const [board, setBoard] = React.useState([]);
+  const [battleId, setBattleId] = React.useState('');
 
   const handleButtonClick = (r, c) => {
-    socket.emit('shot', { row: r, column: c });
+    socket.emit('shot', { row: r, column: c, battleId });
   }
 
 
 
   useEffect(() => {
-    socket.emit('join-battle', { battleId: props.battleId.match.params.id });
+    setBattleId(props.battleId.match.params.id)
+
+    socket.emit('join-game', { battleId: props.battleId.match.params.id });
     socket.on('joined', (msg) => {
       console.log('joined ', msg.board)
       setBoard(msg.board)
     })
 
     socket.on('current-state', (msg) => {
-      console.log('current-state ', msg.board)
+      console.log('msg ', msg)
+      console.log('board ', msg.board)
       setBoard(msg.board)
+    })
+
+    socket.on('not-joined', (msg) => {
+      history.push(`/`)
     })
 
   }, []);
