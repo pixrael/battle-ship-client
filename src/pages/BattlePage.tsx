@@ -1,4 +1,6 @@
 import React from 'react';
+import { useEffect } from 'react';
+
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -6,15 +8,11 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 
 import io from 'socket.io-client';
-import { Button } from '@material-ui/core';
-import WavesIcon from '@material-ui/icons/Waves';
-import Brightness7Icon from '@material-ui/icons/Brightness7';
-import BlurOnIcon from '@material-ui/icons/BlurOn';
-import GridOffIcon from '@material-ui/icons/GridOff';
 import { useHistory } from "react-router-dom";
-import { useEffect } from 'react';
+
 import Hud from '../components/Hud'
 import EndGamePane from '../components/EndGamePane';
+import Board from '../components/Board';
 
 const socket = io('http://localhost:3001');
 
@@ -25,55 +23,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     textAlign: 'center',
-  },
-  button: {
-    minWidth: 10,
-    minHeight: 10,
-    width: 30,
-    height: 38,
-    paddingLeft: 26,
-    color: '#4154b9',
-    borderRadius: 0
-  },
-  buttonSea: {
-    color: '#5e69a5',
-    minWidth: 10,
-    minHeight: 10,
-    width: 30,
-    height: 38,
-    paddingLeft: 26,
-    borderRadius: 0,
-    boxShadow: '0 0 #3f51b5'
-  },
-  buttonMiss: {
-    minWidth: 10,
-    minHeight: 10,
-    width: 30,
-    height: 38,
-    paddingLeft: 26,
-    color: '#8d98d3 !important',
-    borderRadius: 0,
-    backgroundColor: '#3f51b5 !important'
-  },
-  buttonHit: {
-    minWidth: 10,
-    minHeight: 10,
-    width: 30,
-    height: 38,
-    paddingLeft: 26,
-    color: '#990000',
-    borderRadius: 0,
-    backgroundColor: '#3f51b5 !important'
-  },
-  buttonDestroyed: {
-    minWidth: 10,
-    minHeight: 10,
-    width: 30,
-    height: 38,
-    paddingLeft: 26,
-    color: '#000000',
-    borderRadius: 0,
-    backgroundColor: '#3f51b5 !important'
   }
 }));
 
@@ -127,54 +76,6 @@ function BattlePage(props) {
 
   }, []);
 
-  const boardHTML = [];
-
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[0].length; j++) {
-
-      let iconHTML;
-      let buttonClass;
-      let disabled = true
-      if (board[i][j] === 0) {
-        iconHTML = < WavesIcon />
-        buttonClass = classes.buttonSea
-        disabled = false
-      } else if (board[i][j] >= -4 && board[i][j] <= -1) {
-        iconHTML = < Brightness7Icon />
-        buttonClass = classes.buttonHit
-      } else if (board[i][j] >= -40 && board[i][j] <= -10) {
-        iconHTML = < GridOffIcon />
-        buttonClass = classes.buttonDestroyed
-      }
-      else/*  if (board[i][j] === -100) */ {
-        iconHTML = < BlurOnIcon />
-        buttonClass = classes.buttonMiss
-      }
-
-
-      if (battleState === 'GAME_OVER' || battleState === 'GAME_WIN')
-        disabled = true
-
-
-      let buttonHTML = <Button
-        key={`${i}${j}`}
-        onClick={() => handleButtonClick(i, j)}
-        variant="contained"
-        color="primary"
-        className={buttonClass}
-        startIcon={iconHTML}
-        disabled={disabled}
-
-      >
-      </Button>;
-      boardHTML.push(buttonHTML)
-
-      if (j === board[0].length - 1) {
-        boardHTML.push(<br key={`b${i}${j}`} />)
-      }
-
-    }
-  }
 
   return (
     <React.Fragment>
@@ -185,9 +86,7 @@ function BattlePage(props) {
               Battle
             </Typography>
             <Typography className={classes.title} variant="h5" component="h2">
-              {
-                boardHTML
-              }
+              <Board board={board} battleState={battleState} handleCellClick={handleButtonClick} />
             </Typography>
             <EndGamePane battleState={battleState} mainMenuRedirectCallback={() => history.push('/')} />
             <Typography className={classes.title} variant="body2" component="h2">
