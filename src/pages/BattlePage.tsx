@@ -14,6 +14,7 @@ import GridOffIcon from '@material-ui/icons/GridOff';
 import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
 import Hud from '../components/Hud'
+import EndGamePane from '../components/EndGamePane';
 
 const socket = io('http://localhost:3001');
 
@@ -73,12 +74,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#000000',
     borderRadius: 0,
     backgroundColor: '#3f51b5 !important'
-  },
-  buttonFinishGame: {
-    color: 'white',
-    width: 150
   }
-
 }));
 
 
@@ -180,39 +176,6 @@ function BattlePage(props) {
     }
   }
 
-  let gameOverHTML = <></>;
-
-  if (battleState === 'GAME_OVER') {
-    gameOverHTML = <><Typography className={classes.title} variant="h5" component="h2">
-      Game Over
-    </Typography>
-      <Typography className={classes.title} variant="h5" component="h2">
-        <div>
-          <Button className={classes.buttonFinishGame} variant="contained" color="primary" onClick={() => history.push('/')} >
-            Main Menu
-          </Button>
-        </div>
-      </Typography></>
-  }
-
-  let gameWinHTML = <></>;
-
-  if (battleState === 'GAME_WIN') {
-    gameWinHTML = <><Typography className={classes.title} variant="h5" component="h2">
-      YOU WIN!!!
-    </Typography>
-      <Typography className={classes.title} variant="h5" component="h2">
-        <div>
-          <Button className={classes.buttonFinishGame} variant="contained" color="primary" onClick={() => history.push('/')} >
-            Main Menu
-          </Button>
-        </div>
-      </Typography></>
-  }
-
-
-
-
   return (
     <React.Fragment>
       <Container maxWidth="sm">
@@ -226,8 +189,7 @@ function BattlePage(props) {
                 boardHTML
               }
             </Typography>
-            {gameOverHTML}
-            {gameWinHTML}
+            <EndGamePane battleState={battleState} mainMenuRedirectCallback={() => history.push('/')} />
             <Typography className={classes.title} variant="body2" component="h2">
               <Hud shipsData={shipsData} remainingAttemps={remainingAttemps} />
             </Typography>
