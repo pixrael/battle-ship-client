@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 function CreateBattleForm({ onSubmit }) {
 
   const classes = useStyles();
-  const [gameMode, setGameMode] = React.useState('easy');
+  const [gameMode, setGameMode] = React.useState('EASY');
   const [nShots, setNShots] = React.useState(500);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,13 +52,13 @@ function CreateBattleForm({ onSubmit }) {
         displayEmpty
         className={classes.selectEmpty}
       >
-        <MenuItem value={'easy'}>Easy (infinite shots)</MenuItem>
-        <MenuItem value={'medium'}>Medium (100 shots)</MenuItem>
-        <MenuItem value={'hard'}>Hard (50 shoots)</MenuItem>
-        <MenuItem value={'custom'}>Custom (you select how many shots)</MenuItem>
+        <MenuItem value={'EASY'}>Easy (infinite shots)</MenuItem>
+        <MenuItem value={'MEDIUM'}>Medium (100 shots)</MenuItem>
+        <MenuItem value={'HARD'}>Hard (50 shoots)</MenuItem>
+        <MenuItem value={'CUSTOM'}>Custom (you select how many shots)</MenuItem>
       </Select>
       {
-        gameMode === 'custom' &&
+        gameMode === 'CUSTOM' &&
         <TextField
           id="shots-textfield"
           label="Shots:"

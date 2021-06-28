@@ -40,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
     width: 30,
     height: 38,
     paddingLeft: 26,
-    borderRadius: 0
+    borderRadius: 0,
+    boxShadow: '0 0 #3f51b5'
   },
   buttonMiss: {
     minWidth: 10,
@@ -48,8 +49,9 @@ const useStyles = makeStyles((theme) => ({
     width: 30,
     height: 38,
     paddingLeft: 26,
-    color: '#939bc7',
-    borderRadius: 0
+    color: '#8d98d3 !important',
+    borderRadius: 0,
+    backgroundColor: '#3f51b5 !important'
   },
   buttonHit: {
     minWidth: 10,
@@ -58,7 +60,8 @@ const useStyles = makeStyles((theme) => ({
     height: 38,
     paddingLeft: 26,
     color: '#990000',
-    borderRadius: 0
+    borderRadius: 0,
+    backgroundColor: '#3f51b5 !important'
   },
   buttonDestroyed: {
     minWidth: 10,
@@ -67,8 +70,21 @@ const useStyles = makeStyles((theme) => ({
     height: 38,
     paddingLeft: 26,
     color: '#000000',
-    borderRadius: 0
+    borderRadius: 0,
+    backgroundColor: '#3f51b5 !important'
   },
+  leftPaneHud: {
+    width: '50%',
+    float: 'left'
+  },
+  rightPaneHud: {
+    width: '50%',
+    float: 'left'
+  },
+  firstRowPane: {
+
+    textAlign: 'center'
+  }
 
 }));
 
@@ -77,6 +93,8 @@ function BattlePage(props) {
   const history = useHistory();
   const classes = useStyles();
   const [board, setBoard] = React.useState([]);
+  const [shipsData, setShipsData] = React.useState([]);
+  const [remainingAttemps, setRemainingAttemps] = React.useState('');
   const [battleId, setBattleId] = React.useState('');
 
   const handleButtonClick = (r, c) => {
@@ -92,12 +110,18 @@ function BattlePage(props) {
     socket.on('joined', (msg) => {
       console.log('joined ', msg.board)
       setBoard(msg.board)
+      setShipsData(msg.shipsData)
+      const remAttemps = msg.nAttempsData.infinite ? 'infinite' : msg.nAttempsData.nMaxAttemps - msg.nAttempsData.nAttemps
+      setRemainingAttemps(remAttemps + '')
     })
 
     socket.on('current-state', (msg) => {
       console.log('msg ', msg)
       console.log('board ', msg.board)
       setBoard(msg.board)
+      setShipsData(msg.shipsData)
+      const remAttemps = msg.nAttempsData.infinite ? 'infinite' : msg.nAttempsData.nMaxAttemps - msg.nAttempsData.nAttemps
+      setRemainingAttemps(remAttemps + '')
     })
 
     socket.on('not-joined', (msg) => {
@@ -113,9 +137,11 @@ function BattlePage(props) {
 
       let iconHTML;
       let buttonClass;
+      let disabled = true
       if (board[i][j] === 0) {
         iconHTML = < WavesIcon />
         buttonClass = classes.buttonSea
+        disabled = false
       } else if (board[i][j] >= -4 && board[i][j] <= -1) {
         iconHTML = < Brightness7Icon />
         buttonClass = classes.buttonHit
@@ -135,6 +161,7 @@ function BattlePage(props) {
         color="primary"
         className={buttonClass}
         startIcon={iconHTML}
+        disabled={disabled}
 
       >
       </Button>;
@@ -146,6 +173,28 @@ function BattlePage(props) {
 
     }
   }
+
+
+  const leftShipData = []
+  const rightShipData = []
+
+
+  shipsData.forEach((shipData, i) => {
+    const status = shipData.destroyed ? 'destroyed' : ''
+    if (i < shipsData.length / 2) {
+      leftShipData.push(<div key={i} > {shipData.type} - {status} </div>)
+    } else {
+      rightShipData.push(<div key={i} > {shipData.type} - {status} </div>)
+    }
+  })
+
+  const hudHTML = <div>
+    <div className={classes.firstRowPane}>{`Remaining attemps: ${remainingAttemps}`}</div>
+    <div className={classes.leftPaneHud}>{leftShipData}</div>
+    <div className={classes.rightPaneHud}>{rightShipData}</div>
+  </div>
+
+
 
   return (
     <React.Fragment>
@@ -159,6 +208,10 @@ function BattlePage(props) {
               {
                 boardHTML
               }
+            </Typography>
+
+            <Typography className={classes.title} variant="body2" component="h2">
+              {hudHTML}
             </Typography>
           </CardContent>
         </Card>
