@@ -82,8 +82,12 @@ const useStyles = makeStyles((theme) => ({
     float: 'left'
   },
   firstRowPane: {
-
+    fontWeight: 'bold',
     textAlign: 'center'
+  },
+  buttonFinishGame: {
+    color: 'white',
+    width: 150
   }
 
 }));
@@ -96,6 +100,7 @@ function BattlePage(props) {
   const [shipsData, setShipsData] = React.useState([]);
   const [remainingAttemps, setRemainingAttemps] = React.useState('');
   const [battleId, setBattleId] = React.useState('');
+  const [battleState, setBattleState] = React.useState('IN_PROGRESS');
 
   const handleButtonClick = (r, c) => {
     socket.emit('shot', { row: r, column: c, battleId });
@@ -113,6 +118,7 @@ function BattlePage(props) {
       setShipsData(msg.shipsData)
       const remAttemps = msg.nAttempsData.infinite ? 'infinite' : msg.nAttempsData.nMaxAttemps - msg.nAttempsData.nAttemps
       setRemainingAttemps(remAttemps + '')
+      setBattleState(msg.battleState)
     })
 
     socket.on('current-state', (msg) => {
@@ -122,6 +128,7 @@ function BattlePage(props) {
       setShipsData(msg.shipsData)
       const remAttemps = msg.nAttempsData.infinite ? 'infinite' : msg.nAttempsData.nMaxAttemps - msg.nAttempsData.nAttemps
       setRemainingAttemps(remAttemps + '')
+      setBattleState(msg.battleState)
     })
 
     socket.on('not-joined', (msg) => {
@@ -153,6 +160,10 @@ function BattlePage(props) {
         iconHTML = < BlurOnIcon />
         buttonClass = classes.buttonMiss
       }
+
+
+      disabled = battleState === 'GAME_OVER' || battleState === 'GAME_WIN'
+
 
       let buttonHTML = <Button
         key={`${i}${j}`}
@@ -188,6 +199,39 @@ function BattlePage(props) {
     }
   })
 
+
+  let gameOverHTML = <></>;
+
+  if (battleState === 'GAME_OVER') {
+    gameOverHTML = <><Typography className={classes.title} variant="h5" component="h2">
+      Game Over
+    </Typography>
+      <Typography className={classes.title} variant="h5" component="h2">
+        <div>
+          <Button className={classes.buttonFinishGame} variant="contained" color="primary" onClick={() => history.push('/')} >
+            Main Menu
+          </Button>
+        </div>
+      </Typography></>
+  }
+
+  let gameWinHTML = <></>;
+
+  if (battleState === 'GAME_WIN') {
+    gameWinHTML = <><Typography className={classes.title} variant="h5" component="h2">
+      YOU WIN!!!
+    </Typography>
+      <Typography className={classes.title} variant="h5" component="h2">
+        <div>
+          <Button className={classes.buttonFinishGame} variant="contained" color="primary" onClick={() => history.push('/')} >
+            Main Menu
+          </Button>
+        </div>
+      </Typography></>
+  }
+
+
+
   const hudHTML = <div>
     <div className={classes.firstRowPane}>{`Remaining attemps: ${remainingAttemps}`}</div>
     <div className={classes.leftPaneHud}>{leftShipData}</div>
@@ -209,7 +253,8 @@ function BattlePage(props) {
                 boardHTML
               }
             </Typography>
-
+            {gameOverHTML}
+            {gameWinHTML}
             <Typography className={classes.title} variant="body2" component="h2">
               {hudHTML}
             </Typography>
