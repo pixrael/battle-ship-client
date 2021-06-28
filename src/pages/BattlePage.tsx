@@ -16,7 +16,7 @@ import Board from '../components/Board';
 
 const socket = io('http://localhost:3001');
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     minWidth: 275,
     marginTop: 100
@@ -73,6 +73,10 @@ function BattlePage(props) {
     socket.on('not-joined', (msg) => {
       history.push(`/`)
     })
+
+    return () => {
+      socket.emit('exit-battle', { battleId });
+    }
 
   }, []);
 
