@@ -101,11 +101,16 @@ function BattlePage(props) {
   const [remainingAttemps, setRemainingAttemps] = React.useState('');
   const [battleId, setBattleId] = React.useState('');
   const [battleState, setBattleState] = React.useState('IN_PROGRESS');
+  const [madeShots, setMadeShots] = React.useState([]);
 
   const handleButtonClick = (r, c) => {
-    socket.emit('shot', { row: r, column: c, battleId });
-  }
 
+    if (!madeShots.some(shot => shot.r === r && shot.c === c)) {
+      setMadeShots([...madeShots, { r, c }])
+      socket.emit('shot', { row: r, column: c, battleId });
+    }
+
+  }
 
 
   useEffect(() => {
@@ -162,7 +167,8 @@ function BattlePage(props) {
       }
 
 
-      disabled = battleState === 'GAME_OVER' || battleState === 'GAME_WIN'
+      if (battleState === 'GAME_OVER' || battleState === 'GAME_WIN')
+        disabled = true
 
 
       let buttonHTML = <Button
