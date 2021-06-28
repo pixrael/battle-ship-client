@@ -13,6 +13,7 @@ import BlurOnIcon from '@material-ui/icons/BlurOn';
 import GridOffIcon from '@material-ui/icons/GridOff';
 import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
+import Hud from '../components/Hud'
 
 const socket = io('http://localhost:3001');
 
@@ -72,18 +73,6 @@ const useStyles = makeStyles((theme) => ({
     color: '#000000',
     borderRadius: 0,
     backgroundColor: '#3f51b5 !important'
-  },
-  leftPaneHud: {
-    width: '50%',
-    float: 'left'
-  },
-  rightPaneHud: {
-    width: '50%',
-    float: 'left'
-  },
-  firstRowPane: {
-    fontWeight: 'bold',
-    textAlign: 'center'
   },
   buttonFinishGame: {
     color: 'white',
@@ -191,21 +180,6 @@ function BattlePage(props) {
     }
   }
 
-
-  const leftShipData = []
-  const rightShipData = []
-
-
-  shipsData.forEach((shipData, i) => {
-    const status = shipData.destroyed ? 'destroyed' : ''
-    if (i < shipsData.length / 2) {
-      leftShipData.push(<div key={i} > {shipData.type} - {status} </div>)
-    } else {
-      rightShipData.push(<div key={i} > {shipData.type} - {status} </div>)
-    }
-  })
-
-
   let gameOverHTML = <></>;
 
   if (battleState === 'GAME_OVER') {
@@ -238,13 +212,6 @@ function BattlePage(props) {
 
 
 
-  const hudHTML = <div>
-    <div className={classes.firstRowPane}>{`Remaining attemps: ${remainingAttemps}`}</div>
-    <div className={classes.leftPaneHud}>{leftShipData}</div>
-    <div className={classes.rightPaneHud}>{rightShipData}</div>
-  </div>
-
-
 
   return (
     <React.Fragment>
@@ -262,7 +229,7 @@ function BattlePage(props) {
             {gameOverHTML}
             {gameWinHTML}
             <Typography className={classes.title} variant="body2" component="h2">
-              {hudHTML}
+              <Hud shipsData={shipsData} remainingAttemps={remainingAttemps} />
             </Typography>
           </CardContent>
         </Card>
