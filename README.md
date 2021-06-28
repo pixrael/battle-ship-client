@@ -1,44 +1,58 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+# Battleship game
 
-## Available Scripts
+In order to run this game you need a server and a client, the server is developed in node js and the client is developed in react.
 
-In the project directory, you can run:
+Code repository for the server, click [here](https://github.com/pixrael/battle-ship-server)
 
-### `yarn start`
+Code repository for the client, click [here](https://github.com/pixrael/battle-ship-client)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Installation
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Download every project in different directories:
 
-### `yarn test`
+1-Download or clone the [server](https://github.com/pixrael/battle-ship-server) repository:
+<ol>
+    <li><a href="#usage">Execute `$ git clone https://github.com/pixrael/battle-ship-server.git `</a></li>
+    <li><a href="#roadmap">Access to the folder of the project and execute `$ npm install ` to install all the dependencies</a></li>    
+  </ol>
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2-Download or clone the [client](https://github.com/pixrael/battle-ship-client) repository:
 
-### `yarn build`
+<ol>
+    <li><a href="#usage">Execute git clone https://github.com/pixrael/battle-ship-client.git</a></li>
+    <li><a href="#roadmap">Access to the folder of the project and execute `$ npm install ` to install all the dependencies</a></li>    
+  </ol>
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Run the project
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Executing the project
+1-Ensure to point to main branch `$ git checkout main`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2-To run the server, inside the folder of the project execute the command `$ npm start ` that way the server will be running at port 3001
 
-### `yarn eject`
+3-To run the client, inside the folder of the project execute the command `$ npm start ` your browser should start and point to 'http://localhost:3000' showing the main page of the game
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+IMPORTANT: Client will connect with a socket located at 'http://localhost:3001' location and the server will allow only connections with the client at 'http://localhost:3000'
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Run Server in development mode
+1-Ensure to point to main branch `$ git checkout main`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2-Execute the command `$ npm run dev` this command should run the server at port 3001
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+3-Execute `$ npm run watch-dev` this command should watch any change in the server code and update the running server without need of restarting the server
 
-## Learn More
+### Run Client in development mode
+1-Ensure to point to main branch `$ git checkout main`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2-Execute the command `$ npm start` this command should run the client and any change in the code will update the front app
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Execute Server unit tests and coverage
+1-Ensure to point to main branch `$ git checkout main`
+
+2-Execute the command `$ npm test` this command should run the test of the server
+
+3-Execute the command `$ npm run test-coverage` this command should run the test and generate the coverage report, the coverage report should be generated at server\coverage\index.html, open the index.html from a browser to see the report
+
+### Execute Client unit tests and coverage
+
+Client has no test, they are pending for the future
