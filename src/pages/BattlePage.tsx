@@ -38,36 +38,34 @@ function BattlePage(props) {
   const [madeShots, setMadeShots] = React.useState([]);
 
   const handleButtonClick = (r, c) => {
-
     if (!madeShots.some(shot => shot.r === r && shot.c === c)) {
       setMadeShots([...madeShots, { r, c }])
       socket.emit('shot', { row: r, column: c, battleId });
     }
-
   }
 
 
   useEffect(() => {
     setBattleId(props.battleId.match.params.id)
 
-    socket.emit('join-game', { battleId: props.battleId.match.params.id });
-    socket.on('joined', (msg) => {
-      console.log('joined ', msg.board)
+    const processCurrentState = (msg) => {
       setBoard(msg.board)
       setShipsData(msg.shipsData)
       const remAttemps = msg.nAttempsData.infinite ? 'infinite' : msg.nAttempsData.nMaxAttemps - msg.nAttempsData.nAttemps
       setRemainingAttemps(remAttemps + '')
       setBattleState(msg.battleState)
+    }
+
+    socket.emit('join-game', { battleId: props.battleId.match.params.id });
+    socket.on('joined', (msg) => {
+      console.log('joined ', msg.board)
+      processCurrentState(msg)
     })
 
     socket.on('current-state', (msg) => {
       console.log('msg ', msg)
       console.log('board ', msg.board)
-      setBoard(msg.board)
-      setShipsData(msg.shipsData)
-      const remAttemps = msg.nAttempsData.infinite ? 'infinite' : msg.nAttempsData.nMaxAttemps - msg.nAttempsData.nAttemps
-      setRemainingAttemps(remAttemps + '')
-      setBattleState(msg.battleState)
+      processCurrentState(msg)
     })
 
     socket.on('not-joined', (msg) => {
